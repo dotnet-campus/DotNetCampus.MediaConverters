@@ -23,25 +23,25 @@ jobs:
       run: dotnet build --configuration Release MediaConverters.sln
 
     - name: Pack MediaConverters.Tool.ContextNuGet
-      run: dotnet pack --no-build true --configuration Release MediaConverters.Tool.ContextNuGet\MediaConverters.Tool.ContextNuGet.csproj
+      run: dotnet pack .\MediaConverters.Tool.ContextNuGet\MediaConverters.Tool.ContextNuGet.csproj --no-build --configuration Release
 
     - name: Pack DotNetCampus.MediaConverter.SkiaWmfRenderer
-      run: dotnet pack --no-build true --configuration Release SkiaWmfRenderer\src\SkiaWmfRenderer\SkiaWmfRenderer.csproj
+      run: dotnet pack .\SkiaWmfRenderer\src\SkiaWmfRenderer\SkiaWmfRenderer.csproj --no-build --configuration Release
 
     - name: Publish and Pack win-x86
       run: |
         dotnet publish -c Release -r win-x86 MediaConverters.Tool\MediaConverters.Tool.csproj
-        dotnet pack --configuration Release /p:RuntimeIdentifier=win-x86 MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj
+        dotnet pack .\MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj --configuration Release /p:RuntimeIdentifier=win-x86
 
     - name: Publish and Pack win-x64
       run: |
         dotnet publish -c Release -r win-x64 MediaConverters.Tool\MediaConverters.Tool.csproj
-        dotnet pack --configuration Release /p:RuntimeIdentifier=win-x64 MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj
+        dotnet pack .\MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj --configuration Release /p:RuntimeIdentifier=win-x64
 
     - name: Push generated package to NuGet 
       run: |
         dotnet nuget push .\bin\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NugetKey }}
-        dotnet nuget push .\bin\Release\*.nupkg -s https://nuget.pkg.github.com/${{ github.repository_owner }} --api-key ${{ secrets.GITHUB_TOKEN }} --timeout 3000
+#        dotnet nuget push .\bin\Release\*.nupkg -s https://nuget.pkg.github.com/${{ github.repository_owner }} --api-key ${{ secrets.GITHUB_TOKEN }} --timeout 3000
 
   PackOnWindowsArm64:
 
@@ -62,12 +62,12 @@ jobs:
     - name: Publish and Pack win-arm64
       run: |
         dotnet publish -c Release -r win-arm64 MediaConverters.Tool\MediaConverters.Tool.csproj
-        dotnet pack --configuration Release /p:RuntimeIdentifier=win-arm64 MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj        
+        dotnet pack .\MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj --configuration Release /p:RuntimeIdentifier=win-arm64        
 
     - name: Push generated package to NuGet 
       run: |
         dotnet nuget push .\bin\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NugetKey }}
-        dotnet nuget push .\bin\Release\*.nupkg -s https://nuget.pkg.github.com/${{ github.repository_owner }} --api-key ${{ secrets.GITHUB_TOKEN }} --timeout 3000
+#        dotnet nuget push .\bin\Release\*.nupkg -s https://nuget.pkg.github.com/${{ github.repository_owner }} --api-key ${{ secrets.GITHUB_TOKEN }} --timeout 3000
 
   PackOnLinuxX64:
 
@@ -129,7 +129,7 @@ jobs:
     - name: Push generated package to NuGet 
       run: |
         dotnet nuget push ./bin/Release/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NugetKey }}
-        dotnet nuget push ./bin/Release/*.nupkg -s https://nuget.pkg.github.com/${{ github.repository_owner }} --api-key ${{ secrets.GITHUB_TOKEN }} --timeout 3000
+#        dotnet nuget push ./bin/Release/*.nupkg -s https://nuget.pkg.github.com/${{ github.repository_owner }} --api-key ${{ secrets.GITHUB_TOKEN }} --timeout 3000
 
   PackOnLinuxArm64:
 
@@ -191,4 +191,4 @@ jobs:
     - name: Push generated package to NuGet 
       run: |
         dotnet nuget push ./bin/Release/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NugetKey }}
-        dotnet nuget push ./bin/Release/*.nupkg -s https://nuget.pkg.github.com/${{ github.repository_owner }} --api-key ${{ secrets.GITHUB_TOKEN }} --timeout 3000
+#        dotnet nuget push ./bin/Release/*.nupkg -s https://nuget.pkg.github.com/${{ github.repository_owner }} --api-key ${{ secrets.GITHUB_TOKEN }} --timeout 3000
