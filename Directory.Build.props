@@ -1,0 +1,24 @@
+<Project>
+
+  <Import Project="build\Version.props" />
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)bin\$(Configuration)</PackageOutputPath>
+    <Company>dotnet campus（.NET 职业技术学苑）</Company>
+ 
+    <Authors>dotnet-campus</Authors>
+    <RepositoryUrl>https://github.com/dotnet-campus/DotNetCampus.MediaConverters</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/dotnet-campus/DotNetCampus.MediaConverters</PackageProjectUrl>
+    <Description>DotNetCampus.MediaConverters is a media conversion toolkit focused on image optimization and effect processing.</Description>
+
+    <RepositoryType>git</RepositoryType>
+    <Copyright>Copyright © 2020-$([System.DateTime]::Now.ToString(`yyyy`)) dotnet campus, All Rights Reserved.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SourceRoot Include="$(MSBuildThisFileDirectory)"/>
+  </ItemGroup>
+
+</Project>

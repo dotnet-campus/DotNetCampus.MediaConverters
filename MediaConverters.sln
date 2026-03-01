@@ -37,7 +37,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkiaWmfRenderer", "SkiaWmfR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub Action", "GitHub Action", "{FEBFC370-5A97-2074-5438-C062271FB6E1}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\dotnet-format.yml = .github\workflows\dotnet-format.yml
 		.github\workflows\MediaConverters.yml = .github\workflows\MediaConverters.yml
 		.github\workflows\NuGet-tag-publish-MediaConverters.yml = .github\workflows\NuGet-tag-publish-MediaConverters.yml
 	EndProjectSection
@@ -45,6 +44,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{46AFB62F-7218-41D7-A12E-F2D8A5295A93}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaConverters.Tool.Sample", "MediaConverters.Tool.Sample\MediaConverters.Tool.Sample.csproj", "{B25C4077-ED00-89B6-D5E5-49119856C03C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03ABBDC4-09D1-4DE4-B446-79E1574AEDE2}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		build\Version.props = build\Version.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
