@@ -157,6 +157,182 @@ Verb: `convert`
 }
 ```
 
+### 代码调用 - 跨进程二进制可执行文件调用
+
+步骤 1：在项目中添加如下包引用：
+
+```xml
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.Context" Version="3.0.2-alpha06" />
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.linux-arm64" Version="3.0.2-alpha06"/>
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.linux-x64" Version="3.0.2-alpha06"/>
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.win-arm64" Version="3.0.2-alpha06"/>
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.win-x64" Version="3.0.2-alpha06" />
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.win-x86" Version="3.0.2-alpha06"/>
+```
+
+注：`DotNetCampus.MediaConverter.Tool.Context` 仅提供转换配置所需的上下文类定义，不引用 `ImageSharp` 库。也就是说，此方式可在商业项目中使用，且无需付费或承担版权要求。更多说明请参阅下文[版权须知](#版权须知)。
+
+步骤 2：创建 `ImageConvertContext` 并添加转换任务：
+
+```csharp
+var imageOptimizationContext = new ImageConvertContext()
+{
+    MaxImageWidth = 1000,
+    MaxImageHeight = 1000,
+    PngCompressionLevel = 9,
+    ImageConvertTaskList = new List<IImageConvertTask>()
+};
+
+var replaceColorTask = new ReplaceColorTask()
+{
+    ReplaceColorInfoList =
+    [
+        new ReplaceColorInfo("#FFFFD9A2", "#FFFFFFFF"),
+        new ReplaceColorInfo("#FFFFD6A0", "#FFFFFFFF")
+    ]
+};
+imageOptimizationContext.ImageConvertTaskList.Add(replaceColorTask);
+
+var setBrightnessTask = new SetBrightnessTask()
+{
+    Percentage = 0.9f
+};
+imageOptimizationContext.ImageConvertTaskList.Add(setBrightnessTask);
+
+var setContrastTask = new SetContrastTask()
+{
+    Percentage = 0.9f,
+};
+imageOptimizationContext.ImageConvertTaskList.Add(setContrastTask);
+
+...
+```
+
+步骤 3：将 `ImageConvertContext` 序列化为 Json 文件并调用可执行文件：
+
+```csharp
+string workingFolder = ...;
+string inputFile = ...;
+string outputFile = ...;
+
+var jsonText = imageOptimizationContext.ToJsonText();
+var jsonFilePath = Path.Join(workingFolder, "ImageConvert.json");
+File.WriteAllText(jsonFilePath, jsonText, Encoding.UTF8);
+
+IReadOnlyList<string> arguments =
+[
+    "convert", // Verb
+    "-WorkingFolder", workingFolder,
+    "-OutputFile", outputFile,
+    "-InputFile", inputFile,
+    "-ConvertConfigurationFile", jsonFilePath,
+#if DEBUG
+    "-ShouldLogToFile", bool.TrueString,
+#endif
+];
+
+var processPath = FindProcessPath();
+
+var processStartInfo = new ProcessStartInfo(processPath, arguments)
+{
+    CreateNoWindow = true,
+};
+
+var process = Process.Start(processStartInfo)!;
+process.EnableRaisingEvents = true;
+process.WaitForExit();
+var exitCode = process.ExitCode;
+
+if (exitCode == 0)
+{
+    // 成功
+}
+else
+{
+    // 失败
+}
+```
+
+`FindProcessPath` 方法负责查找可执行文件路径，可按如下方式实现：
+
+```csharp
+static string FindProcessPath()
+{
+    string extension = string.Empty;
+    if (OperatingSystem.IsWindows())
+    {
+        extension = ".exe";
+    }
+
+    var fileName = $"DotNetCampus.MediaConverter{extension}";
+    var file = Path.Join(AppContext.BaseDirectory, fileName);
+    if (File.Exists(file))
+    {
+        // 发布后该路径存在。
+        return file;
+    }
+
+    // 在开发环境 Debug 模式运行时会进入该分支，因为可执行文件不会被复制到输出目录。
+    // 此时需要从 runtimes 目录查找可执行文件。
+    var platform = string.Empty;
+    if (OperatingSystem.IsWindows())
+    {
+        // 为什么不使用 RuntimeInformation.ProcessArchitecture？
+        // 因为进程可能运行在 x64 系统的 x86 模式下，需要匹配正确的运行时文件。
+        if (RuntimeInformation.OSArchitecture == Architecture.X86)
+        {
+            platform = "win-x86";
+        }
+        else if (RuntimeInformation.OSArchitecture == Architecture.X64)
+        {
+            platform = "win-x64";
+        }
+        else if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
+        {
+            platform = "win-arm64";
+        }
+        else
+        {
+            ThrowPlatformNotSupportedException();
+        }
+    }
+    else if (OperatingSystem.IsLinux())
+    {
+        if (RuntimeInformation.OSArchitecture == Architecture.X64)
+        {
+            platform = "linux-x64";
+        }
+        else if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
+        {
+            platform = "linux-arm64";
+        }
+        else
+        {
+            ThrowPlatformNotSupportedException();
+        }
+    }
+    else
+    {
+        ThrowPlatformNotSupportedException();
+    }
+
+    file = Path.Join(AppContext.BaseDirectory, "runtimes", platform, "native", fileName);
+    if (File.Exists(file))
+    {
+        return file;
+    }
+    else
+    {
+        throw new FileNotFoundException($"Can not find Media Converter Tool process file", file);
+    }
+
+    void ThrowPlatformNotSupportedException()
+    {
+        throw new PlatformNotSupportedException($"OperatingSystem={RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture}");
+    }
+}
+```
+
 ## 版权须知
 
 如您使用 MediaConverters.Lib 作为直接依赖库，则您必须遵守 [Six Labors Split License, Version 1.0](ThirdPartyNotices/SixLabors.LICENSE.txt) 协议。这是因为本项目采用了 Six Labors 的 ImageSharp 库作为基础设施的原因
