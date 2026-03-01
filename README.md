@@ -1,8 +1,22 @@
 ﻿# DotNetCampus.MediaConverters
 
+[中文文档](./README.zh-cn.md)
+
 DotNetCampus.MediaConverters is a media conversion toolkit focused on image optimization and effect processing. It supports both direct library usage (via NuGet) and command-line invocation as a standalone process. The conversion capabilities were originally designed for Office image effects, and can also be used independently in other scenarios. It supports resizing limits and common image effects such as grayscale, black-and-white, duotone, brightness/contrast adjustment, luminance, soft edge, and color replacement.
 
-[中文文档](./README.zh-cn.md)
+## NuGet
+
+| NuGet | Version |
+|---|---|
+| DotNetCampus.MediaConverter.Tool.Context | [![](https://img.shields.io/nuget/v/DotNetCampus.MediaConverter.Tool.Context.svg)](https://www.nuget.org/packages/DotNetCampus.MediaConverter.Tool.Context) |
+| DotNetCampus.MediaConverter.Tool.linux-arm64 | [![](https://img.shields.io/nuget/v/DotNetCampus.MediaConverter.Tool.linux-arm64.svg)](https://www.nuget.org/packages/DotNetCampus.MediaConverter.Tool.linux-arm64) |
+| DotNetCampus.MediaConverter.Tool.linux-x64 | [![](https://img.shields.io/nuget/v/DotNetCampus.MediaConverter.Tool.linux-x64.svg)](https://www.nuget.org/packages/DotNetCampus.MediaConverter.Tool.linux-x64) |
+| DotNetCampus.MediaConverter.Tool.win-arm64 | [![](https://img.shields.io/nuget/v/DotNetCampus.MediaConverter.Tool.win-arm64.svg)](https://www.nuget.org/packages/DotNetCampus.MediaConverter.Tool.win-arm64) |
+| DotNetCampus.MediaConverter.Tool.win-x64 | [![](https://img.shields.io/nuget/v/DotNetCampus.MediaConverter.Tool.win-x64.svg)](https://www.nuget.org/packages/DotNetCampus.MediaConverter.Tool.win-x64) |
+| DotNetCampus.MediaConverter.Tool.win-x86 | [![](https://img.shields.io/nuget/v/DotNetCampus.MediaConverter.Tool.win-x86.svg)](https://www.nuget.org/packages/DotNetCampus.MediaConverter.Tool.win-x86) |
+|-|-|
+| DotNetCampus.MediaConverter.SkiaWmfRenderer | [![](https://img.shields.io/nuget/v/DotNetCampus.MediaConverter.SkiaWmfRenderer.svg)](https://www.nuget.org/packages/DotNetCampus.MediaConverter.SkiaWmfRenderer) |
+
 
 ## Usage
 
