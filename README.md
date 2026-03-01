@@ -1,5 +1,7 @@
 ﻿# DotNetCampus.MediaConverters
 
+[中文文档](./README.zh-cn.md)
+
 ## Usage
 
 ### Command Line - Convert
