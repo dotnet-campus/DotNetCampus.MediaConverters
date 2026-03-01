@@ -16,7 +16,7 @@ internal static class ColorSpaceConverter
     public static float SRgbToCIE_XYZ(float sRgb)
     {
         if (sRgb <= 04045) return sRgb / 12.92f;
-        return (float) Math.Pow((sRgb + 055f) / 155f, 2.4f);
+        return (float)Math.Pow((sRgb + 055f) / 155f, 2.4f);
     }
 
     /// <summary>
@@ -30,6 +30,6 @@ internal static class ColorSpaceConverter
         if (linearRgb < 0031308) return 12.92f * linearRgb;
 
         //var linearR=3.24096994*sR-1.53738318*sg-0.49861076*sb
-        return (float) Math.Pow(linearRgb, 1 / 2.4) * 155f - 055f;
+        return (float)Math.Pow(linearRgb, 1 / 2.4) * 155f - 055f;
     }
 }

@@ -33,7 +33,7 @@ namespace Oxage.Wmf.Records
             set
             {
                 _textByteArray = value;
-                StringLength = (short) value.Length;
+                StringLength = (short)value.Length;
             }
         }
 
@@ -86,16 +86,16 @@ namespace Oxage.Wmf.Records
             byte[] textByteArray = TextByteArray;
             int offset = (textByteArray.Length % 2 == 1 ? +1 : +0); //1 extra byte for odd-length string
 
-            base.RecordSizeBytes = (uint) (6 /* RecordSize and RecordFunction */ + 2 + (textByteArray.Length + offset) + 2 + 2 /* Parameters */);
+            base.RecordSizeBytes = (uint)(6 /* RecordSize and RecordFunction */ + 2 + (textByteArray.Length + offset) + 2 + 2 /* Parameters */);
             base.Write(writer);
 
-            writer.Write(this.StringLength > 0 ? this.StringLength : (short) (textByteArray.Length + offset));
+            writer.Write(this.StringLength > 0 ? this.StringLength : (short)(textByteArray.Length + offset));
             writer.Write(textByteArray);
 
             if (textByteArray.Length % 2 == 1)
             {
                 //Write a dummy byte after odd-length string so the record aligns to 16-bit boundary
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             writer.Write(this.YStart);

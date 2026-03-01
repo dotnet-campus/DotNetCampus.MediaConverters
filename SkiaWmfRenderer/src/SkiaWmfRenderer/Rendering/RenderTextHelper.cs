@@ -31,12 +31,12 @@ static class RenderTextHelper
         ReadOnlySpan<GlyphInfo> glyphInfoSpan = buffer.GetGlyphInfoSpan();
         Span<ushort> glyphsSpan = glyphInfoSpan.Length < 1024 ?
             stackalloc ushort[glyphInfoSpan.Length]
-            : (Span<ushort>) new ushort[glyphInfoSpan.Length];
+            : (Span<ushort>)new ushort[glyphInfoSpan.Length];
 
         for (int i = 0; i < glyphInfoSpan.Length; i++)
         {
             var codepoint = glyphInfoSpan[i].Codepoint;
-            glyphsSpan[i] = (ushort) codepoint;
+            glyphsSpan[i] = (ushort)codepoint;
         }
 
         Span<byte> byteBuffer = MemoryMarshal.AsBytes(glyphsSpan);

@@ -108,7 +108,7 @@ class WmfRenderStatus : IDisposable
         _harfBuzzFace = null;
 
         SKTypeface? typeface = TryGetTypeface();
-       
+
 
         RenderConfiguration.LogMessage($"CurrentFontName='{CurrentFontName}' get the SKTypeface {(typeface is null ? "is null" : "not null")}. SKTypeface={typeface?.FamilyName} GlyphCount={typeface?.GlyphCount}. Text={text}");
 
@@ -147,7 +147,7 @@ class WmfRenderStatus : IDisposable
             }
         }
 
-        var typeface = SKTypeface.FromFamilyName(CurrentFontName, (SKFontStyleWeight) FontWeight,
+        var typeface = SKTypeface.FromFamilyName(CurrentFontName, (SKFontStyleWeight)FontWeight,
             SKFontStyleWidth.Normal, IsItalic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
 
         if ((typeface is null || typeface.GlyphCount == 0) && RenderConfiguration.FontFolder is not null)

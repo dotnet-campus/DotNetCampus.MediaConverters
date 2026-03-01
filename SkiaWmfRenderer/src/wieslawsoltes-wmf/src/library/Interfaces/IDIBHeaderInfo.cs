@@ -2,7 +2,7 @@
 
 namespace Oxage.Wmf
 {
-	public interface IDIBHeaderInfo : IBinaryObject
-	{
-	}
+    public interface IDIBHeaderInfo : IBinaryObject
+    {
+    }
 }

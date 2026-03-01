@@ -86,9 +86,9 @@ internal static class ColorExtension
     /// <returns>The blended colors.</returns>
     public static ColorMetadata Blend(this ColorMetadata sourceColor, ColorMetadata backColor, double amount)
     {
-        var r = (byte) ((sourceColor.RGB.Item1 * amount) + backColor.RGB.Item1 * (1 - amount));
-        var g = (byte) ((sourceColor.RGB.Item2 * amount) + backColor.RGB.Item2 * (1 - amount));
-        var b = (byte) ((sourceColor.RGB.Item3 * amount) + backColor.RGB.Item3 * (1 - amount));
+        var r = (byte)((sourceColor.RGB.Item1 * amount) + backColor.RGB.Item1 * (1 - amount));
+        var g = (byte)((sourceColor.RGB.Item2 * amount) + backColor.RGB.Item2 * (1 - amount));
+        var b = (byte)((sourceColor.RGB.Item3 * amount) + backColor.RGB.Item3 * (1 - amount));
         return new ColorMetadata(r, g, b, sourceColor.ARGB.Item4);
     }
 
@@ -197,7 +197,7 @@ internal static class ColorExtension
             a = convertHexToByteResult.hexNumber;
             if (!isDoubleHex)
             {
-                a = (byte) (a * 16 + a);
+                a = (byte)(a * 16 + a);
             }
         }
         else
@@ -230,9 +230,9 @@ internal static class ColorExtension
         {
             //#FD92 = #FFDD9922
 
-            r = (byte) (r * 16 + r);
-            g = (byte) (g * 16 + g);
-            b = (byte) (b * 16 + b);
+            r = (byte)(r * 16 + r);
+            g = (byte)(g * 16 + g);
+            b = (byte)(b * 16 + b);
         }
 
         color = new ColorMetadata(r, g, b, a);

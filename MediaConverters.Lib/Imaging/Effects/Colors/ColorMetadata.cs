@@ -35,7 +35,7 @@ public readonly struct ColorMetadata : IEquatable<ColorMetadata>
                 return byte.MaxValue;
             }
 
-            return (byte) Math.Min(Math.Round(value * byte.MaxValue), byte.MaxValue);
+            return (byte)Math.Min(Math.Round(value * byte.MaxValue), byte.MaxValue);
         }
     }
 

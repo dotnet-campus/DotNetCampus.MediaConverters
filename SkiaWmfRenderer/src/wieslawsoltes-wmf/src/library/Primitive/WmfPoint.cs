@@ -12,7 +12,7 @@ namespace Oxage.Wmf.Primitive
             Y = y;
         }
 
-        public int X { get;  }
-        public int Y { get;  }
+        public int X { get; }
+        public int Y { get; }
     }
 }

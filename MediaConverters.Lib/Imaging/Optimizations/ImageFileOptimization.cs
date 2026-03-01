@@ -133,7 +133,7 @@ public static class ImageFileOptimization
                 {
                     ColorType = PngColorType.RgbWithAlpha,
                     BitDepth = PngBitDepth.Bit8,
-                    CompressionLevel = ((PngCompressionLevel?) context.PngCompressionLevel) ?? PngCompressionLevel.DefaultCompression
+                    CompressionLevel = ((PngCompressionLevel?)context.PngCompressionLevel) ?? PngCompressionLevel.DefaultCompression
                 });
             }
 
@@ -209,11 +209,11 @@ public static class ImageFileOptimization
         // 于是就有 maxPixelCount x Width = 555165 x 4000 = 2220660000 > int.MaxValue = 2147483647
         // 出现越界错误
 
-        double wh = image.Width / (double) image.Height;
-        double hw = image.Height / (double) image.Width;
+        double wh = image.Width / (double)image.Height;
+        double hw = image.Height / (double)image.Width;
 
-        var pixelWidth = (int) Math.Sqrt(maxPixelCount * wh);
-        var pixelHeight = (int) Math.Sqrt(maxPixelCount * hw);
+        var pixelWidth = (int)Math.Sqrt(maxPixelCount * wh);
+        var pixelHeight = (int)Math.Sqrt(maxPixelCount * hw);
         image.Mutate(context => context.Resize(new Size(pixelWidth, pixelHeight), compand: true));
     }
 
@@ -238,19 +238,19 @@ public static class ImageFileOptimization
         var pixelWidth = image.Width;
         var pixelHeight = image.Height;
 
-        var scale = pixelWidth / (double) pixelHeight;
+        var scale = pixelWidth / (double)pixelHeight;
 
         // 如果图片的宽度超过限制，则缩放到限制的宽度
         if (maxImageWidth is not null && pixelWidth > maxImageWidth)
         {
             pixelWidth = maxImageWidth.Value;
-            pixelHeight = (int) Math.Round(pixelWidth / scale, MidpointRounding.AwayFromZero);
+            pixelHeight = (int)Math.Round(pixelWidth / scale, MidpointRounding.AwayFromZero);
         }
 
         if (maxImageHeight is not null && pixelHeight > maxImageHeight)
         {
             pixelHeight = maxImageHeight.Value;
-            pixelWidth = (int) Math.Round(pixelHeight * scale, MidpointRounding.AwayFromZero);
+            pixelWidth = (int)Math.Round(pixelHeight * scale, MidpointRounding.AwayFromZero);
         }
 
         image.Mutate(context => context.Resize(new Size(pixelWidth, pixelHeight), compand: true));

@@ -26,8 +26,8 @@ internal static class SoftEdgeHelper
 
         //var channels = 4;
 
-        var offsetX = (int) Math.Round(radius / 4.0);
-        var offsetY = (int) Math.Round(radius / 4.0);
+        var offsetX = (int)Math.Round(radius / 4.0);
+        var offsetY = (int)Math.Round(radius / 4.0);
 
         var inputSource = CreateSoftEdgeAlphaMask(bitmap);
 
@@ -76,7 +76,7 @@ internal static class SoftEdgeHelper
                 {
                     ref var pixel = ref pixelRow[col];
                     var alphaMask = erodeMask[col, row] / 255d;
-                    pixel.A = (byte) (alphaMask * pixel.A);
+                    pixel.A = (byte)(alphaMask * pixel.A);
                     //pixelRow[col] = pixel;
                 }
             }
@@ -102,7 +102,7 @@ internal static class SoftEdgeHelper
                 for (var col = 0; col < cols; col++)
                 {
                     var pixel = pixelRow[col];
-                    inputSource[col, row] = pixel.A == 0 ? (byte) 0 : byte.MaxValue;
+                    inputSource[col, row] = pixel.A == 0 ? (byte)0 : byte.MaxValue;
                 }
             }
         });
@@ -233,8 +233,8 @@ internal static class SoftEdgeHelper
             }
 
             //计算模糊
-            var targetValue = valueCache.Values.Sum() / (double) count;
-            target[col, row] = (byte) Math.Round(targetValue);
+            var targetValue = valueCache.Values.Sum() / (double)count;
+            target[col, row] = (byte)Math.Round(targetValue);
         }
     }
 }

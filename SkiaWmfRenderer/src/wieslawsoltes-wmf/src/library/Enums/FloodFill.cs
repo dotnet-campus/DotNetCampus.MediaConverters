@@ -2,9 +2,9 @@
 
 namespace Oxage.Wmf
 {
-	public enum FloodFill
-	{
-		FLOODFILLBORDER = 0x0000,
-		FLOODFILLSURFACE = 0x0001
-	}
+    public enum FloodFill
+    {
+        FLOODFILLBORDER = 0x0000,
+        FLOODFILLSURFACE = 0x0001
+    }
 }

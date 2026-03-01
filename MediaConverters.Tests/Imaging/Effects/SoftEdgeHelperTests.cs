@@ -34,7 +34,7 @@ public class SoftEdgeHelperTests
                 pixel = Vector4.SquareRoot(pixel);
                 if (col < row.Length - 1)
                 {
-                    pixel = pixel * (1 + Vector4.DistanceSquared(pixel, row[col + 1]/100));
+                    pixel = pixel * (1 + Vector4.DistanceSquared(pixel, row[col + 1] / 100));
                 }
             }
         }));

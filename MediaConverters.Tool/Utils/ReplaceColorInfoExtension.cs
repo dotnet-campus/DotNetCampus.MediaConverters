@@ -10,7 +10,7 @@ internal static class ReplaceColorInfoExtension
     {
         if (ColorConverter.TryConvertToColor(info.OldColor, out var oldColor) && ColorConverter.TryConvertToColor(info.NewColor, out var newColor))
         {
-            return (oldColor,newColor);
+            return (oldColor, newColor);
         }
 
         throw new FormatException();

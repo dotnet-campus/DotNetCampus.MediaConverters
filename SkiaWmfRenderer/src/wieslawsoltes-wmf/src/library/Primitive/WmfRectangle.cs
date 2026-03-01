@@ -2,7 +2,7 @@
 
 public struct WmfRectangle
 {
-    public WmfRectangle(WmfPoint point,WmfSize size)
+    public WmfRectangle(WmfPoint point, WmfSize size)
     {
         Left = point.X;
         Top = point.Y;

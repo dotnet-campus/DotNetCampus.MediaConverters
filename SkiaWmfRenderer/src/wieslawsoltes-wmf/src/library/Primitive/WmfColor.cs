@@ -24,10 +24,10 @@
 
         public static WmfColor FromArgb(byte r, byte g, byte b)
         {
-            return FromRgb((byte) r, (byte) g, (byte) b);
+            return FromRgb((byte)r, (byte)g, (byte)b);
         }
 
-        public static WmfColor FromRgb( byte r, byte g, byte b)
+        public static WmfColor FromRgb(byte r, byte g, byte b)
         {
             return new WmfColor((byte)0xFF, (byte)r, (byte)g, (byte)b);
         }

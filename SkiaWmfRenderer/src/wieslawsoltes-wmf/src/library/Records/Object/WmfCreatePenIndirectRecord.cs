@@ -36,7 +36,7 @@ namespace Oxage.Wmf.Records
 
         public override void Read(BinaryReader reader)
         {
-            this.Style = (PenStyle) reader.ReadUInt16();
+            this.Style = (PenStyle)reader.ReadUInt16();
 
             short x = reader.ReadInt16();
             short y = reader.ReadInt16();
@@ -49,13 +49,13 @@ namespace Oxage.Wmf.Records
         public override void Write(BinaryWriter writer)
         {
             base.Write(writer);
-            writer.Write((ushort) this.Style);
-            writer.Write((ushort) this.Width.X); //PointS.X is used as width
-            writer.Write((ushort) this.Width.Y); //PointS.Y is ignored according to the documentation
-            writer.Write((byte) this.Color.R);
-            writer.Write((byte) this.Color.G);
-            writer.Write((byte) this.Color.B);
-            writer.Write((byte) 0x00);
+            writer.Write((ushort)this.Style);
+            writer.Write((ushort)this.Width.X); //PointS.X is used as width
+            writer.Write((ushort)this.Width.Y); //PointS.Y is ignored according to the documentation
+            writer.Write((byte)this.Color.R);
+            writer.Write((byte)this.Color.G);
+            writer.Write((byte)this.Color.B);
+            writer.Write((byte)0x00);
         }
 
         protected override void Dump(StringBuilder builder)

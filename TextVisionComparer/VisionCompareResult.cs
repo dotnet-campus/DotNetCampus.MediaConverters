@@ -16,7 +16,7 @@ public readonly record struct VisionCompareResult(bool Success, double Similarit
             return false;
         }
 
-        if ((double) DissimilarPixelCount / PixelCount > 0.1)
+        if ((double)DissimilarPixelCount / PixelCount > 0.1)
         {
             return false;
         }

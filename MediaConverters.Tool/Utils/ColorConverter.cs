@@ -93,15 +93,15 @@ static class ColorConverter
             byte n;
             if (c >= '0' && c <= '9')
             {
-                n = (byte) (c - '0');
+                n = (byte)(c - '0');
             }
             else if (c >= 'a' && c <= 'f')
             {
-                n = (byte) (c - 'a' + 10);
+                n = (byte)(c - 'a' + 10);
             }
             else if (c >= 'A' && c <= 'F')
             {
-                n = (byte) (c - 'A' + 10);
+                n = (byte)(c - 'A' + 10);
             }
             else
             {
@@ -114,7 +114,7 @@ static class ColorConverter
 
         if (readCount == 1)
         {
-            result = (byte) (result * 16 + result);
+            result = (byte)(result * 16 + result);
         }
 
         return (true, result);

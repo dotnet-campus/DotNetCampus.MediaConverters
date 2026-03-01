@@ -449,11 +449,11 @@ class WmfRenderer
             switch (unknownRecord.RecordType)
             {
                 case RecordType.META_EXTTEXTOUT:
-                {
-                    Debug.Fail("当前已经有 WmfExtTextoutRecord 类型了");
+                    {
+                        Debug.Fail("当前已经有 WmfExtTextoutRecord 类型了");
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 

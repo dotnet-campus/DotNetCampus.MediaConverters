@@ -10,7 +10,7 @@ abstract class WorkerBase<T> : IWorker
 {
     public void Run(Image<Rgba32> image, IImageConvertTask task)
     {
-        RunCore(image, (T) task);
+        RunCore(image, (T)task);
     }
 
     protected abstract void RunCore(Image<Rgba32> image, T task);

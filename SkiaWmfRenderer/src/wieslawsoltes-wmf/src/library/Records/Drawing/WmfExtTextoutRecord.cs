@@ -52,7 +52,7 @@ namespace Oxage.Wmf.Records
             set
             {
                 _textByteArray = value;
-                StringLength = (short) value.Length;
+                StringLength = (short)value.Length;
             }
         }
 
@@ -96,7 +96,7 @@ namespace Oxage.Wmf.Records
             this.Y = reader.ReadInt16();
             this.X = reader.ReadInt16();
             this.StringLength = reader.ReadInt16();
-            this.FwOpts = (ExtTextOutOptions) reader.ReadUInt16();
+            this.FwOpts = (ExtTextOutOptions)reader.ReadUInt16();
 
             // Rectangle (8 bytes): An optional 8-byte Rect Object (section 2.2.2.18).) When either ETO_CLIPPED, ETO_OPAQUE, or both are specified, the rectangle defines the dimensions, in logical coordinates, used for clipping, opaquing, or both. When neither ETO_CLIPPED nor ETO_OPAQUE is specified, the coordinates in Rectangle are ignored.
             if (FwOpts is ExtTextOutOptions.ETO_CLIPPED or ExtTextOutOptions.ETO_OPAQUE)
@@ -140,7 +140,7 @@ namespace Oxage.Wmf.Records
 
             byte[] textByteArray = TextByteArray;
 
-            var recordSizeBytes = (uint) (SizeofRecordSizeAndRecordTypeBytes /* RecordSize and RecordFunction */ + sizeof(UInt16) * (1/*Y*/ + 1/*X*/+ 1/*StringLength*/+ 1/*fwOpts*/)
+            var recordSizeBytes = (uint)(SizeofRecordSizeAndRecordTypeBytes /* RecordSize and RecordFunction */ + sizeof(UInt16) * (1/*Y*/ + 1/*X*/+ 1/*StringLength*/+ 1/*fwOpts*/)
                 + (this.Rectangle != null ? 8/*Sizeof(Rect)*/ : 0) + textByteArray.Length + dxLength);
             var isOdd = recordSizeBytes % 2 == 1;
             if (isOdd)
@@ -156,8 +156,8 @@ namespace Oxage.Wmf.Records
 
             writer.Write(this.Y);
             writer.Write(this.X);
-            writer.Write(this.StringLength > 0 ? this.StringLength : (short) textByteArray.Length);
-            writer.Write((ushort) this.FwOpts);
+            writer.Write(this.StringLength > 0 ? this.StringLength : (short)textByteArray.Length);
+            writer.Write((ushort)this.FwOpts);
 
             if (Rectangle is not null)
             {

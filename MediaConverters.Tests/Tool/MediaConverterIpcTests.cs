@@ -45,7 +45,7 @@ public class MediaConverterIpcTests
                             Radius = 20
                         }
                     ]
-                },testFolder)
+                }, testFolder)
             });
 
             Assert.IsNotNull(response);
@@ -102,7 +102,7 @@ public class MediaConverterIpcTests
         await task.WaitAsync(TimeSpan.FromMinutes(15));
     }
 
-    private static string ToConfigurationFile(ImageConvertContext imageConvertContext,string testFolder)
+    private static string ToConfigurationFile(ImageConvertContext imageConvertContext, string testFolder)
     {
         var jsonText = JsonSerializer.Serialize(imageConvertContext,
             new JsonSerializerOptions(MediaConverterJsonSerializerSourceGenerationContext.Default.Options)
