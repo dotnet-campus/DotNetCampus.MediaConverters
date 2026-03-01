@@ -20,23 +20,23 @@ jobs:
       run: dotnet TagToVersion -t ${{ github.ref }}
 
     - name: Build with dotnet
-      run: dotnet build --configuration Release src\MediaConverters\MediaConverters.sln
+      run: dotnet build --configuration Release MediaConverters.sln
 
     - name: Pack MediaConverters.Tool.ContextNuGet
-      run: dotnet pack --no-build true --configuration Release src\MediaConverters\MediaConverters.Tool.ContextNuGet\MediaConverters.Tool.ContextNuGet.csproj
+      run: dotnet pack --no-build true --configuration Release MediaConverters.Tool.ContextNuGet\MediaConverters.Tool.ContextNuGet.csproj
 
     - name: Pack DotNetCampus.MediaConverter.SkiaWmfRenderer
-      run: dotnet pack --no-build true --configuration Release src\MediaConverters\SkiaWmfRenderer\src\SkiaWmfRenderer\SkiaWmfRenderer.csproj
+      run: dotnet pack --no-build true --configuration Release SkiaWmfRenderer\src\SkiaWmfRenderer\SkiaWmfRenderer.csproj
 
     - name: Publish and Pack win-x86
       run: |
-        dotnet publish -c Release -r win-x86 src\MediaConverters\MediaConverters.Tool\MediaConverters.Tool.csproj
-        dotnet pack --configuration Release /p:RuntimeIdentifier=win-x86 src\MediaConverters\MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj
+        dotnet publish -c Release -r win-x86 MediaConverters.Tool\MediaConverters.Tool.csproj
+        dotnet pack --configuration Release /p:RuntimeIdentifier=win-x86 MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj
 
     - name: Publish and Pack win-x64
       run: |
-        dotnet publish -c Release -r win-x64 src\MediaConverters\MediaConverters.Tool\MediaConverters.Tool.csproj
-        dotnet pack --configuration Release /p:RuntimeIdentifier=win-x64 src\MediaConverters\MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj
+        dotnet publish -c Release -r win-x64 MediaConverters.Tool\MediaConverters.Tool.csproj
+        dotnet pack --configuration Release /p:RuntimeIdentifier=win-x64 MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj
 
     - name: Push generated package to NuGet 
       run: |
@@ -57,12 +57,12 @@ jobs:
       run: dotnet TagToVersion -t ${{ github.ref }}
 
     - name: Build with dotnet
-      run: dotnet build --configuration Release src\MediaConverters\MediaConverters.sln
+      run: dotnet build --configuration Release MediaConverters.sln
 
     - name: Publish and Pack win-arm64
       run: |
-        dotnet publish -c Release -r win-arm64 src\MediaConverters\MediaConverters.Tool\MediaConverters.Tool.csproj
-        dotnet pack --configuration Release /p:RuntimeIdentifier=win-arm64 src\MediaConverters\MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj        
+        dotnet publish -c Release -r win-arm64 MediaConverters.Tool\MediaConverters.Tool.csproj
+        dotnet pack --configuration Release /p:RuntimeIdentifier=win-arm64 MediaConverters.Tool.RuntimeNuGet\MediaConverters.Tool.RuntimeNuGet.csproj        
 
     - name: Push generated package to NuGet 
       run: |
@@ -119,12 +119,12 @@ jobs:
       run: dotnet-TagToVersion -t ${{ github.ref }}
  
     - name: Build with dotnet
-      run: dotnet build --configuration Release src/MediaConverters/MediaConverters.sln
+      run: dotnet build --configuration Release MediaConverters.sln
 
     - name: Publish and Pack linux-x64
       run: |
-        dotnet publish -c Release -r linux-x64 src/MediaConverters/MediaConverters.Tool/MediaConverters.Tool.csproj
-        dotnet pack --configuration Release /p:RuntimeIdentifier=linux-x64 src/MediaConverters/MediaConverters.Tool.RuntimeNuGet/MediaConverters.Tool.RuntimeNuGet.csproj
+        dotnet publish -c Release -r linux-x64 MediaConverters.Tool/MediaConverters.Tool.csproj
+        dotnet pack --configuration Release /p:RuntimeIdentifier=linux-x64 MediaConverters.Tool.RuntimeNuGet/MediaConverters.Tool.RuntimeNuGet.csproj
 
     - name: Push generated package to NuGet 
       run: |
@@ -181,12 +181,12 @@ jobs:
       run: dotnet-TagToVersion -t ${{ github.ref }}
  
     - name: Build with dotnet
-      run: dotnet build --configuration Release src/MediaConverters/MediaConverters.sln
+      run: dotnet build --configuration Release MediaConverters.sln
 
     - name: Publish and Pack linux-arm64
       run: |
-        dotnet publish -c Release -r linux-arm64 src/MediaConverters/MediaConverters.Tool/MediaConverters.Tool.csproj
-        dotnet pack --configuration Release /p:RuntimeIdentifier=linux-arm64 src/MediaConverters/MediaConverters.Tool.RuntimeNuGet/MediaConverters.Tool.RuntimeNuGet.csproj        
+        dotnet publish -c Release -r linux-arm64 MediaConverters.Tool/MediaConverters.Tool.csproj
+        dotnet pack --configuration Release /p:RuntimeIdentifier=linux-arm64 MediaConverters.Tool.RuntimeNuGet/MediaConverters.Tool.RuntimeNuGet.csproj        
 
     - name: Push generated package to NuGet 
       run: |

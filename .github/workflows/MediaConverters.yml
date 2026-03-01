@@ -11,10 +11,10 @@ jobs:
     - uses: actions/checkout@v1
   
     - name: Build with dotnet
-      run: dotnet build --configuration Release src\MediaConverters\MediaConverters.sln
+      run: dotnet build --configuration Release MediaConverters.sln
 
     - name: Test
-      run: dotnet test --configuration Release --no-build src\MediaConverters\MediaConverters.Tests\MediaConverters.Tests.csproj
+      run: dotnet test --configuration Release --no-build MediaConverters.Tests\MediaConverters.Tests.csproj
 
   BuildOnLinux:
 
@@ -29,7 +29,7 @@ jobs:
           9.0.x
 
     - name: Build with dotnet
-      run: dotnet build --configuration Release src/MediaConverters/MediaConverters.sln
+      run: dotnet build --configuration Release MediaConverters.sln
 
     - name: Test
-      run: dotnet test --configuration Release --no-build src/MediaConverters/MediaConverters.Tests/MediaConverters.Tests.csproj
+      run: dotnet test --configuration Release --no-build MediaConverters.Tests/MediaConverters.Tests.csproj
