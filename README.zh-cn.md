@@ -1,119 +1,181 @@
-# DocumentFormat.OpenXml.Extensions
+﻿# DotNetCampus.MediaConverters
 
-[中文](README.zh-cn.md) | [English](README.md)
+## 用法
 
-OpenXML SDK 的扩展集，包括扩展库和辅助开发工具
+### 命令行-转换
 
-| Build |
-|--|
-|![](https://github.com/dotnet-campus/dotnetCampus.OfficeDocumentZipper/workflows/.NET%20Core/badge.svg)|
+Verb: `convert`
 
-# 工具
+命令行参数：
 
-## dotnetCampus.OfficeDocumentZipper
-
-[解压缩文档为文件夹工具](https://blog.lindexi.com/post/dotnet-OpenXML-%E8%A7%A3%E5%8E%8B%E7%BC%A9%E6%96%87%E6%A1%A3%E4%B8%BA%E6%96%87%E4%BB%B6%E5%A4%B9%E5%B7%A5%E5%85%B7.html)
-
-在开发过程中，需要不断解压缩 Office 文档，阅读或修改文档的内容，再次压缩回 Office 文档，这样的效率比较低。本工具提供一键解压自动格式化，一键组装Office文档且打开的功能
-
-### 使用方法
-
-OfficeDocumentZipper 工具作为 dotnet tool 发布，可使用以下代码进行安装和启动
-
-```
-dotnet tool update -g dotnetCampus.OfficeDocumentZipper
-
-OfficeDocumentZipper
+```shell
+-WorkingFolder: 工作目录
+-InputFile: 输入文件路径
+-OutputFile: 输出文件路径
+-ConvertConfigurationFile: 转换配置文件路径
 ```
 
-建议将以上命令存放作为 bat 脚本，方便每次快速运行
+其中 `-ConvertConfigurationFile` 转换配置文件是一个 Json 格式的文件，里面包含转换的任务的配置内容。配置内容格式为 ImageConvertContext 类型的序列化内容，具体定义如下：
 
-### 功能
+- MaxImageWidth: 最大图片宽度限制。可不填或为空，表示不限制
+- MaxImageHeight: 最大图片高度限制。可不填或为空，表示不限制
+- UseAreaSizeLimit: 是否使用面积大小限制。可不填或为空表示默认值，默认为使用面积大小限制
+- ImageConvertTaskList: 转换任务列表。可不填或为空，表示不进行转换任务。其类型为 IImageConvertTask 接口的数组
 
-- 解压 pptx docx xlsx 文件以及自动格式化文档内容
-- 压缩文件夹作为 pptx docx xlsx 文件
-- 转换 OpenXML 单位
+其接口固定有 Type 属性，表示任务类型。具体的任务类型及其参数如下：
 
-![](https://user-images.githubusercontent.com/16054566/91013976-2b1c4580-e61b-11ea-8ef2-044ea79ef31b.png)
+- SetSoftEdgeEffectTask： 设置柔化边缘效果任务
+  - Radius: 边缘半径，单位为像素。可不填或为空
 
-# 库
-
-| Name | NuGet|
-|--|--|
-|dotnetCampus.OpenXMLUnitConverter|[![](https://img.shields.io/nuget/v/dotnetCampus.OpenXMLUnitConverter.svg)](https://www.nuget.org/packages/dotnetCampus.OpenXMLUnitConverter)|
-|dotnetCampus.OpenXMLUnitConverter.Source|[![](https://img.shields.io/nuget/v/dotnetCampus.OpenXMLUnitConverter.Source.svg)](https://www.nuget.org/packages/dotnetCampus.OpenXMLUnitConverter.Source)|
-
-
-## dotnetCampus.OpenXMLUnitConverter
-
-定义 OpenXML 的单位以及提供单位转换的功能
-
-### 安装方法
-
-DLL 包:
-
-```xml
-<PackageReference Include="dotnetCampus.OpenXmlUnitConverter" Version="1.9.0" />
-```
-
-[SouceYard](https://github.com/dotnet-campus/SourceYard) 源代码包:
-
-```xml
-<PackageReference Include="dotnetCampus.OpenXmlUnitConverter.Source" Version="1.9.0">
-  <PrivateAssets>all</PrivateAssets>
-  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-</PackageReference>
-```
-
-### 使用方法
-
-例子：
-
-```csharp
-void Foo(DocumentFormat.OpenXml.Drawing.Point2DType point)
+```json
 {
-    var x = new Emu(point.X);
-    var pixelValue = x.ToPixel();
-    var cmValue = x.ToCm();
+  "ImageConvertTaskList":
+  [
+    {
+      "Type": "SetSoftEdgeEffectTask",
+      "Radius": 20
+    }
+  ]
 }
 ```
 
-详细请看 [Office Open XML 的测量单位](https://blog.lindexi.com/post/Office-Open-XML-%E7%9A%84%E6%B5%8B%E9%87%8F%E5%8D%95%E4%BD%8D.html )
+- SetLuminanceEffectTask： 设置冲蚀效果
 
-## DocumentFormat.OpenXml.Flatten
-
-提供继承的属性拍平的功能的库，包含常用处理逻辑和计算逻辑
-
-### 安装方法
-
-DLL 包:
-
-```xml
-<PackageReference Include="dotnetCampus.DocumentFormat.OpenXml.Flatten" Version="2.0.0" />
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetLuminanceEffectTask"
+    }
+  ]
+}
 ```
 
-[SouceYard](https://github.com/dotnet-campus/SourceYard) 源代码包:
+- SetGrayScaleEffectTask： 设置灰度图效果
 
-```xml
-<PackageReference Include="dotnetCampus.DocumentFormat.OpenXml.Flatten.Source" Version="2.0.0">
-  <PrivateAssets>all</PrivateAssets>
-  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-</PackageReference>
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetGrayScaleEffectTask"
+    }
+  ]
+}
 ```
 
-### 使用方法
+- SetContrastTask: 更改当前图像的对比度
+  - Percentage: 值为 0 将创建一个完全灰色的图像。值为 1 时输入保持不变。其他值是效果的线性乘数。允许超过 1 的值，从而提供具有更高对比度的结果
 
-具体使用方法请参阅 [DocumentFormat.OpenXml.Flatten 使用文档](src/DocumentFormat.OpenXml.Flatten/README.md) 和[示例代码](demo)
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetContrastTask",
+      "Percentage": 0.7
+    }
+  ]
+}
+```
 
-# 感谢
+- SetBrightnessTask： 更改当前图像的亮度
+  -  Percentage: 值为 0 将创建一个完全黑色的图像。值为 1 时输入保持不变。其他值是效果的线性乘数。允许超过 1 的值，从而提供更明亮的结果
 
-- [OfficeDev/Open-XML-SDK: Open XML SDK by Microsoft](https://github.com/OfficeDev/Open-XML-SDK/ )
-- [ironfede/openmcdf: Microsoft Compound File .net component - pure C# - NET Standard 2.0](https://github.com/ironfede/openmcdf )
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetBrightnessTask",
+      "Percentage": 0.7
+    }
+  ]
+}
+```
 
-# 开源社区
+- SetBlackWhiteEffectTask： 设置黑白图效果
 
-如果你希望参与贡献，欢迎 [Pull Request](https://github.com/dotnet-campus/DocumentFormat.OpenXml.Extensions/pulls)，或给我们 [报告 Bug](https://github.com/dotnet-campus/DocumentFormat.OpenXml.Extensions/issues/new)
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetBlackWhiteEffectTask",
+      "Threshold": 0.7
+    }
+  ]
+}
+```
 
-# 授权协议
+- SetDuotoneEffectTask： 设置双色调效果
+  - ArgbFormatColor1: 颜色 1 的 ARGB 格式字符串
+  - ArgbFormatColor2: 颜色 2 的 ARGB 格式字符串
 
-[![](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetDuotoneEffectTask",
+      "ArgbFormatColor1": "#FFF1D7A6",
+      "ArgbFormatColor2": "#FFFFF2C8"
+    }
+  ]
+}
+```
+
+- ReplaceColorTask： 替换颜色任务
+  - ReplaceColorInfoList: 替换颜色信息列表。每个替换颜色信息包含以下属性：
+    - OldColor: 旧颜色的 ARGB 格式字符串
+    - NewColor: 新颜色的 ARGB 格式字符串
+
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "ReplaceColorTask",
+      "ReplaceColorInfoList": 
+      [
+        {
+          "OldColor": "#FFF1D7A6",
+          "NewColor": "#00FFFFFF"
+        },
+        {
+          "OldColor": "#FFFFF2C8",
+          "NewColor": "#00FFFFFF"
+        },
+        {
+          "OldColor": "#FFE3D8AB",
+          "NewColor": "#00FFFFFF"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## 版权须知
+
+如您使用 MediaConverters.Lib 作为直接依赖库，则您必须遵守 [Six Labors Split License, Version 1.0](ThirdPartyNotices/SixLabors.LICENSE.txt) 协议。这是因为本项目采用了 Six Labors 的 ImageSharp 库作为基础设施的原因
+
+本项目的其他部分均采用 MIT 协议发布，您可以自由使用、更改、重新分发，且无需付费，商业许可免费使用，无版权纠纷
+
+满足以下**任一**条件，您可放心在商业项目中使用本项目，而无需付费以及任何涉及版权的要求：
+
+- 仅通过进程调用的命令行工具方式使用 DotNetCampus.MediaConverter 系列工具；而非作为直接依赖库的方式使用
+  - 注： 这是因为按照 Six Labors 的协议，本工具属于开源项目，符合 Six Labors 免费条件。通过命令行方式使用工具时，不属于对 Six Labors 的依赖，无需购买 Six Labors 商业许可
+  - 注： 上述说明来自于 Six Labors 的 CEO —— James Jackson-South 的答复。具体答复内容引用如下：
+  - > If they are just using your tool as it is, they do not need to purchase a separate license.
+  - 参阅： <https://sixlabors.freshdesk.com/support/tickets/517> (此链接无法直接被访问，仅用于与 Six Labors 组织沟通时附带)
+- 开源项目
+- 年总收入少于 100 万美元的营利性公司或个人
+
+反之，若您不满足上述任一条件，则需要购买 Six Labors 的商业许可
+
+## 感谢
+
+- [Six Labors](https://sixlabors.com/) 提供了 ImageSharp 库，作为本项目的基础设施
+- [wieslawsoltes/wmf](https://github.com/wieslawsoltes/wmf)

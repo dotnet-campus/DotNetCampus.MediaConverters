@@ -1,113 +1,236 @@
-# DocumentFormat.OpenXml.Extensions
+﻿# DotNetCampus.MediaConverters
 
-[中文](README.zh-cn.md) | [English](README.md)
+## Usage
 
-The OpenXML SDK extensions. Including libraries and tools.
+### Command Line - Convert
 
-| Build |
-|--|
-|![](https://github.com/dotnet-campus/dotnetCampus.OfficeDocumentZipper/workflows/.NET%20Core/badge.svg)|
+Verb: `convert`
 
-# Tools
+Command line parameters:
 
-## dotnetCampus.OfficeDocumentZipper
-
-A dotnet tool to assist in editing Office document files
-
-### Usage
-
-```
-dotnet tool update -g dotnetCampus.OfficeDocumentZipper
-
-OfficeDocumentZipper
+```shell
+-WorkingFolder: Working directory
+-InputFile: Path to the input file
+-OutputFile: Path to the output file
+-ConvertConfigurationFile: Path to the conversion configuration file
 ```
 
-### Feature
+The `-ConvertConfigurationFile` parameter specifies a JSON-format configuration file, which contains the settings for the conversion tasks. The configuration follows the structure of a serialized `ImageConvertContext` object, defined as follows:
 
-- Unzip pptx docx xlsx file
-- Zip directory to pptx docx xlsx file
-- Convert OpenXML unit
+- **MaxImageWidth**: Maximum image width limit. Optional; if omitted or empty, no limit is applied.
+- **MaxImageHeight**: Maximum image height limit. Optional; if omitted or empty, no limit is applied.
+- **UseAreaSizeLimit**: Whether to apply an area size limit. Optional; if omitted or empty, the default is to use an area size limit.
+- **ImageConvertTaskList**: List of conversion tasks. Optional; if omitted or empty, no conversion tasks will be performed. This should be an array of objects implementing the `IImageConvertTask` interface.
 
-![](https://user-images.githubusercontent.com/16054566/91013976-2b1c4580-e61b-11ea-8ef2-044ea79ef31b.png)
+Each task object must contain a `Type` property indicating the type of task. The available task types and their parameters are as follows:
 
-# Libraries
+---
 
-| Name | NuGet|
-|--|--|
-|dotnetCampus.OpenXMLUnitConverter|[![](https://img.shields.io/nuget/v/dotnetCampus.OpenXMLUnitConverter.svg)](https://www.nuget.org/packages/dotnetCampus.OpenXMLUnitConverter)|
-|dotnetCampus.OpenXMLUnitConverter.Source|[![](https://img.shields.io/nuget/v/dotnetCampus.OpenXMLUnitConverter.Source.svg)](https://www.nuget.org/packages/dotnetCampus.OpenXMLUnitConverter.Source)|
-|dotnetCampus.DocumentFormat.OpenXml.Flatten|[![](https://img.shields.io/nuget/v/dotnetCampus.DocumentFormat.OpenXml.Flatten.svg)](https://www.nuget.org/packages/dotnetCampus.DocumentFormat.OpenXml.Flatten)|
-|dotnetCampus.DocumentFormat.OpenXml.Flatten.Source|[![](https://img.shields.io/nuget/v/dotnetCampus.DocumentFormat.OpenXml.Flatten.Source.svg)](https://www.nuget.org/packages/dotnetCampus.DocumentFormat.OpenXml.Flatten.Source)|
+#### SetSoftEdgeEffectTask
 
-## dotnetCampus.OpenXMLUnitConverter
+Applies a soft edge effect to the image.
 
-Defining units for OpenXml properties and the unit conversion function.
+- **Radius**: The radius of the soft edge in pixels. Optional.
 
-### Install
+Example:
 
-DLL Pakcage:
-
-```xml
-<PackageReference Include="dotnetCampus.OpenXmlUnitConverter" Version="1.9.0" />
-```
-
-[SouceYard](https://github.com/dotnet-campus/SourceYard) Package:
-
-```xml
-<PackageReference Include="dotnetCampus.OpenXmlUnitConverter.Source" Version="1.9.0">
-  <PrivateAssets>all</PrivateAssets>
-  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-</PackageReference>
-```
-
-### Usage
-
-The sample:
-
-```csharp
-void Foo(DocumentFormat.OpenXml.Drawing.Point2DType point)
+```json
 {
-    var x = new Emu(point.X);
-    var pixelValue = x.ToPixel();
-    var cmValue = x.ToCm();
+  "ImageConvertTaskList":
+  [
+    {
+      "Type": "SetSoftEdgeEffectTask",
+      "Radius": 20
+    }
+  ]
 }
 ```
 
-## DocumentFormat.OpenXml.Flatten
+---
 
-### Install
+#### SetLuminanceEffectTask
 
-DLL Pakcage:
+Applies a luminance (erosion) effect to the image.
 
-```xml
-<PackageReference Include="dotnetCampus.DocumentFormat.OpenXml.Flatten" Version="2.0.0" />
+Example:
+
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetLuminanceEffectTask"
+    }
+  ]
+}
 ```
 
-[SouceYard](https://github.com/dotnet-campus/SourceYard) Package:
+---
 
-```xml
-<PackageReference Include="dotnetCampus.DocumentFormat.OpenXml.Flatten.Source" Version="2.0.0">
-  <PrivateAssets>all</PrivateAssets>
-  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-</PackageReference>
+#### SetGrayScaleEffectTask
+
+Converts the image to grayscale.
+
+Example:
+
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetGrayScaleEffectTask"
+    }
+  ]
+}
 ```
 
-### Usage
+---
 
-See [DocumentFormat.OpenXml.Flatten README.md](src/DocumentFormat.OpenXml.Flatten/README.md) and the [Demo](demo).
+#### SetContrastTask
 
+Adjusts the contrast of the current image.
 
-# Thanks
+- **Percentage**: A value of 0 produces a completely gray image. A value of 1 leaves the input unchanged. Other values act as linear multipliers for contrast adjustment. Values greater than 1 are allowed for increased contrast.
 
-- [OfficeDev/Open-XML-SDK: Open XML SDK by Microsoft](https://github.com/OfficeDev/Open-XML-SDK/ )
-- [ironfede/openmcdf: Microsoft Compound File .net component - pure C# - NET Standard 2.0](https://github.com/ironfede/openmcdf )
+Example:
 
-# Contributing
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetContrastTask",
+      "Percentage": 0.7
+    }
+  ]
+}
+```
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/dotnet-campus/DocumentFormat.OpenXml.Extensions/pulls)
+---
 
-If you would like to contribute, feel free to create a [Pull Request](https://github.com/dotnet-campus/DocumentFormat.OpenXml.Extensions/pulls), or give us [Bug Report](https://github.com/dotnet-campus/DocumentFormat.OpenXml.Extensions/issues/new).
+#### SetBrightnessTask
 
-# License
+Adjusts the brightness of the current image.
 
-[![](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+- **Percentage**: A value of 0 produces a completely black image. A value of 1 leaves the input unchanged. Other values act as linear multipliers for brightness adjustment. Values greater than 1 are allowed for increased brightness.
+
+Example:
+
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetBrightnessTask",
+      "Percentage": 0.7
+    }
+  ]
+}
+```
+
+---
+
+#### SetBlackWhiteEffectTask
+
+Converts the image to black and white.
+
+- **Threshold**: Threshold value for black-and-white conversion (optional).
+
+Example:
+
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetBlackWhiteEffectTask",
+      "Threshold": 0.7
+    }
+  ]
+}
+```
+
+---
+
+#### SetDuotoneEffectTask
+
+Applies a duotone effect using two specified colors.
+
+- **ArgbFormatColor1**: ARGB format string representing color 1.
+- **ArgbFormatColor2**: ARGB format string representing color 2.
+
+Example:
+
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "SetDuotoneEffectTask",
+      "ArgbFormatColor1": "#FFF1D7A6",
+      "ArgbFormatColor2": "#FFFFF2C8"
+    }
+  ]
+}
+```
+
+---
+
+#### ReplaceColorTask
+
+Replaces specific colors in the image with new ones.
+
+- **ReplaceColorInfoList**: A list containing color replacement information. Each entry includes:
+   - **OldColor**: ARGB format string for the color to be replaced.
+   - **NewColor**: ARGB format string for the replacement color.
+
+Example:
+
+```json
+{
+  "ImageConvertTaskList": 
+  [
+    {
+      "Type": "ReplaceColorTask",
+      "ReplaceColorInfoList": 
+      [
+        {
+          "OldColor": "#FFF1D7A6",
+          "NewColor": "#00FFFFFF"
+        },
+        {
+          "OldColor": "#FFFFF2C8",
+          "NewColor": "#00FFFFFF"
+        },
+        {
+          "OldColor": "#FFE3D8AB",
+          "NewColor": "#00FFFFFF"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Copyright Notice
+
+If you use MediaConverters.Lib as a direct dependency, you must comply with the [Six Labors Split License, Version 1.0](ThirdPartyNotices/SixLabors.LICENSE.txt). This is because this project uses Six Labors' ImageSharp library as its infrastructure.
+
+All other parts of this project are released under the MIT License. You are free to use, modify, and redistribute them without charge. Commercial use is free, and there are no copyright disputes.
+
+You can use this project in commercial projects without payment or any copyright requirements if you meet **any** of the following conditions:
+
+- You use the DotNetCampus.MediaConverter tools only via command-line invocation as a separate process, not as a direct dependency library.
+  - Note: According to the Six Labors license, this tool is open source and meets the free usage conditions of Six Labors. Using the tool via command-line does not constitute a dependency on Six Labors, so you do not need to purchase a commercial license from Six Labors.
+  - Note: The above explanation is based on a response from James Jackson-South, CEO of Six Labors. The specific reply is quoted as follows:
+  - > If they are just using your tool as it is, they do not need to purchase a separate license.
+  - Reference: <https://sixlabors.freshdesk.com/support/tickets/517> (This link may not be directly accessible and is provided for communication with the Six Labors organization.)
+- The project is open source.
+- The annual revenue of the for-profit company or individual is less than $1,000,000 USD.
+
+Otherwise, if you do not meet any of the above conditions, you will need to purchase a commercial license from Six Labors.
+
+## Thanks
+
+- [Six Labors](https://sixlabors.com/) for providing the ImageSharp library, which is used as the infrastructure for this project.
+- [wieslawsoltes/wmf](https://github.com/wieslawsoltes/wmf)
