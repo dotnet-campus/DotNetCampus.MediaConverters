@@ -1,5 +1,7 @@
 ﻿# DotNetCampus.MediaConverters
 
+DotNetCampus.MediaConverters is a media conversion toolkit focused on image optimization and effect processing. It supports both direct library usage (via NuGet) and command-line invocation as a standalone process. The conversion capabilities were originally designed for Office image effects, and can also be used independently in other scenarios. It supports resizing limits and common image effects such as grayscale, black-and-white, duotone, brightness/contrast adjustment, luminance, soft edge, and color replacement.
+
 [中文文档](./README.zh-cn.md)
 
 ## Usage
