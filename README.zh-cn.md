@@ -1,5 +1,7 @@
 ﻿# DotNetCampus.MediaConverters
 
+DotNetCampus.MediaConverters 是一个专注于图像优化与特效处理的多媒体转换工具集，既支持通过 NuGet 直接作为库调用，也支持以独立进程方式进行命令行调用。其转换能力最初为 Office 图片特效场景设计，同时也可以在其他业务中单独拆分使用。支持图片尺寸限制以及灰度、黑白、双色调、亮度/对比度、冲蚀、柔化边缘、颜色替换等常见效果。
+
 ## 用法
 
 ### 命令行-转换
@@ -157,21 +159,197 @@ Verb: `convert`
 }
 ```
 
+### 代码调用 - 跨进程二进制可执行文件调用
+
+步骤 1：在项目中添加如下包引用：
+
+```xml
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.Context" Version="3.0.2-alpha06" />
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.linux-arm64" Version="3.0.2-alpha06"/>
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.linux-x64" Version="3.0.2-alpha06"/>
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.win-arm64" Version="3.0.2-alpha06"/>
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.win-x64" Version="3.0.2-alpha06" />
+    <PackageReference Include="DotNetCampus.MediaConverter.Tool.win-x86" Version="3.0.2-alpha06"/>
+```
+
+注：`DotNetCampus.MediaConverter.Tool.Context` 仅提供转换配置所需的上下文类定义，不引用 `ImageSharp` 库。也就是说，此方式可在商业项目中使用，且无需付费或承担版权要求。更多说明请参阅下文[版权须知](#版权须知)。
+
+步骤 2：创建 `ImageConvertContext` 并添加转换任务：
+
+```csharp
+var imageOptimizationContext = new ImageConvertContext()
+{
+    MaxImageWidth = 1000,
+    MaxImageHeight = 1000,
+    PngCompressionLevel = 9,
+    ImageConvertTaskList = new List<IImageConvertTask>()
+};
+
+var replaceColorTask = new ReplaceColorTask()
+{
+    ReplaceColorInfoList =
+    [
+        new ReplaceColorInfo("#FFFFD9A2", "#FFFFFFFF"),
+        new ReplaceColorInfo("#FFFFD6A0", "#FFFFFFFF")
+    ]
+};
+imageOptimizationContext.ImageConvertTaskList.Add(replaceColorTask);
+
+var setBrightnessTask = new SetBrightnessTask()
+{
+    Percentage = 0.9f
+};
+imageOptimizationContext.ImageConvertTaskList.Add(setBrightnessTask);
+
+var setContrastTask = new SetContrastTask()
+{
+    Percentage = 0.9f,
+};
+imageOptimizationContext.ImageConvertTaskList.Add(setContrastTask);
+
+...
+```
+
+步骤 3：将 `ImageConvertContext` 序列化为 Json 文件并调用可执行文件：
+
+```csharp
+string workingFolder = ...;
+string inputFile = ...;
+string outputFile = ...;
+
+var jsonText = imageOptimizationContext.ToJsonText();
+var jsonFilePath = Path.Join(workingFolder, "ImageConvert.json");
+File.WriteAllText(jsonFilePath, jsonText, Encoding.UTF8);
+
+IReadOnlyList<string> arguments =
+[
+    "convert", // Verb
+    "-WorkingFolder", workingFolder,
+    "-OutputFile", outputFile,
+    "-InputFile", inputFile,
+    "-ConvertConfigurationFile", jsonFilePath,
+#if DEBUG
+    "-ShouldLogToFile", bool.TrueString,
+#endif
+];
+
+var processPath = FindProcessPath();
+
+var processStartInfo = new ProcessStartInfo(processPath, arguments)
+{
+    CreateNoWindow = true,
+};
+
+var process = Process.Start(processStartInfo)!;
+process.EnableRaisingEvents = true;
+process.WaitForExit();
+var exitCode = process.ExitCode;
+
+if (exitCode == 0)
+{
+    // 成功
+}
+else
+{
+    // 失败
+}
+```
+
+`FindProcessPath` 方法负责查找可执行文件路径，可按如下方式实现：
+
+```csharp
+static string FindProcessPath()
+{
+    string extension = string.Empty;
+    if (OperatingSystem.IsWindows())
+    {
+        extension = ".exe";
+    }
+
+    var fileName = $"DotNetCampus.MediaConverter{extension}";
+    var file = Path.Join(AppContext.BaseDirectory, fileName);
+    if (File.Exists(file))
+    {
+        // 发布后该路径存在。
+        return file;
+    }
+
+    // 在开发环境 Debug 模式运行时会进入该分支，因为可执行文件不会被复制到输出目录。
+    // 此时需要从 runtimes 目录查找可执行文件。
+    var platform = string.Empty;
+    if (OperatingSystem.IsWindows())
+    {
+        // 为什么不使用 RuntimeInformation.ProcessArchitecture？
+        // 因为进程可能运行在 x64 系统的 x86 模式下，需要匹配正确的运行时文件。
+        if (RuntimeInformation.OSArchitecture == Architecture.X86)
+        {
+            platform = "win-x86";
+        }
+        else if (RuntimeInformation.OSArchitecture == Architecture.X64)
+        {
+            platform = "win-x64";
+        }
+        else if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
+        {
+            platform = "win-arm64";
+        }
+        else
+        {
+            ThrowPlatformNotSupportedException();
+        }
+    }
+    else if (OperatingSystem.IsLinux())
+    {
+        if (RuntimeInformation.OSArchitecture == Architecture.X64)
+        {
+            platform = "linux-x64";
+        }
+        else if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
+        {
+            platform = "linux-arm64";
+        }
+        else
+        {
+            ThrowPlatformNotSupportedException();
+        }
+    }
+    else
+    {
+        ThrowPlatformNotSupportedException();
+    }
+
+    file = Path.Join(AppContext.BaseDirectory, "runtimes", platform, "native", fileName);
+    if (File.Exists(file))
+    {
+        return file;
+    }
+    else
+    {
+        throw new FileNotFoundException($"Can not find Media Converter Tool process file", file);
+    }
+
+    void ThrowPlatformNotSupportedException()
+    {
+        throw new PlatformNotSupportedException($"OperatingSystem={RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture}");
+    }
+}
+```
+
 ## 版权须知
 
 如您使用 MediaConverters.Lib 作为直接依赖库，则您必须遵守 [Six Labors Split License, Version 1.0](ThirdPartyNotices/SixLabors.LICENSE.txt) 协议。这是因为本项目采用了 Six Labors 的 ImageSharp 库作为基础设施的原因
 
-本项目的其他部分均采用 MIT 协议发布，您可以自由使用、更改、重新分发，且无需付费，商业许可免费使用，无版权纠纷
+本项目其余部分均采用 MIT 协议发布。您可以自由使用、更改、重新分发，且无需付费；商业许可免费使用，无版权纠纷
 
-满足以下**任一**条件，您可放心在商业项目中使用本项目，而无需付费以及任何涉及版权的要求：
+若满足以下**任一**条件，您可放心在商业项目中使用本项目，而无需付费以及承担任何额外版权的要求：
 
-- 仅通过进程调用的命令行工具方式使用 DotNetCampus.MediaConverter 系列工具；而非作为直接依赖库的方式使用
-  - 注： 这是因为按照 Six Labors 的协议，本工具属于开源项目，符合 Six Labors 免费条件。通过命令行方式使用工具时，不属于对 Six Labors 的依赖，无需购买 Six Labors 商业许可
+- 仅通过命令行方式、以独立进程调用 DotNetCampus.MediaConverter 系列工具；而非作为直接依赖库的方式使用
+  - 注： 按照 Six Labors 的协议，本工具属于开源项目，且满足 Six Labors 免费使用条件。通过命令行调用工具不构成对 Six Labors 的依赖，因此无需购买 Six Labors 商业许可
   - 注： 上述说明来自于 Six Labors 的 CEO —— James Jackson-South 的答复。具体答复内容引用如下：
   - > If they are just using your tool as it is, they do not need to purchase a separate license.
   - 参阅： <https://sixlabors.freshdesk.com/support/tickets/517> (此链接无法直接被访问，仅用于与 Six Labors 组织沟通时附带)
-- 开源项目
-- 年总收入少于 100 万美元的营利性公司或个人
+- 项目为开源项目
+- 营利性公司或个人年收入低于 100 万美元
 
 反之，若您不满足上述任一条件，则需要购买 Six Labors 的商业许可
 
