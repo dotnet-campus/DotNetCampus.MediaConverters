@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- 不能支持到 NET6.0 版本，原因是 JSON 不能降级了 -->
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <Nullable>enable</Nullable>
 
@@ -8,6 +9,7 @@
     <Description>The context of Media Converter Tool.</Description>
 
     <PackageId>DotNetCampus.MediaConverter.Tool.Context</PackageId>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <IsAotCompatible>true</IsAotCompatible>
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
